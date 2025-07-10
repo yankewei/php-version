@@ -2,6 +2,8 @@
 
 namespace Yankewei\PHP;
 
+use InvalidArgumentException;
+
 class Version
 {
     private function __construct(
@@ -28,6 +30,10 @@ class Version
             $version_id = $version[0] << 16 | $version[1] << 8 | $version[2];
         } else {
             $version_id = hexdec(strval($version));
+
+            if (!is_int($version_id)) {
+                throw new InvalidArgumentException('Invalid version');
+            }
         }
 
         return new self($version_id);
