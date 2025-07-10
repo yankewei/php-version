@@ -8,8 +8,7 @@ class Version
 {
     private function __construct(
         public private(set) readonly int $version_id
-    ) {
-    }
+    ) {}
 
     public static function current(): self
     {
@@ -19,9 +18,6 @@ class Version
     /**
      * string 8.1.1 from function phpversion()
      * int 80101 from PHP_VERSION_ID
-     * 
-     * @param string|int $version
-     * @return self
      */
     public static function new(string|int $version): self
     {
@@ -31,7 +27,7 @@ class Version
         } else {
             $version_id = hexdec(strval($version));
 
-            if (!is_int($version_id)) {
+            if (! is_int($version_id)) {
                 throw new InvalidArgumentException('Invalid version');
             }
         }
@@ -46,16 +42,15 @@ class Version
 
     public function minor(): int
     {
-        return $this->version_id >> 8 & 0xff;
+        return $this->version_id >> 8 & 0xFF;
     }
 
     public function patch(): int
     {
-        return $this->version_id & 0xff;
+        return $this->version_id & 0xFF;
     }
 
     /**
-     * @param self $version
      * @return int -1: less than, 0: equal, 1: greater than
      */
     public function compare(self $version): int
