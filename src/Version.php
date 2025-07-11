@@ -8,7 +8,8 @@ class Version
 {
     private function __construct(
         public private(set) readonly int $version_id
-    ) {}
+    ) {
+    }
 
     public static function current(): self
     {

@@ -33,13 +33,8 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction --no-progress
 
-    - name: Check code style (PHP CS Fixer) - dry run
-      run: |
-        if composer show friendsofphp/php-cs-fixer &>/dev/null; then
-          vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
-        else
-          echo "PHP CS Fixer not installed, skipping..."
-        fi
+    - name: Check code style (PHP CS Fixer) - dry run only
+      run: composer run-script cs-check
 
     - name: Run PHPStan with strict rules
       run: composer run-script phpstan -- --error-format=github
