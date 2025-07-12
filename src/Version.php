@@ -6,6 +6,12 @@ use InvalidArgumentException;
 
 class Version
 {
+    /**
+     * Latest stable PHP version
+     * This constant is updated automatically by GitHub Actions
+     */
+    public const LATEST_STABLE_VERSION = '8.4.10';
+
     private function __construct(
         public private(set) readonly int $version_id
     ) {
@@ -57,5 +63,14 @@ class Version
     public function compare(self $version): int
     {
         return $this->version_id <=> $version->version_id;
+    }
+
+    /**
+     * Check if the current version is the latest stable version
+     */
+    public function isLatestStable(): bool
+    {
+        $latestStable = self::new(self::LATEST_STABLE_VERSION);
+        return $this->compare($latestStable) === 0;
     }
 }

@@ -170,6 +170,36 @@ describe('Version', function () {
         });
     });
 
+    describe('isLatestStable()', function () {
+        it('returns boolean value', function () {
+            $version = Version::new('8.1.1');
+            $result = $version->isLatestStable();
+
+            expect($result)->toBeBool();
+        });
+
+        it('returns false for obviously outdated versions', function () {
+            $version = Version::new('7.4.0');
+            $result = $version->isLatestStable();
+
+            expect($result)->toBe(false);
+        });
+
+        it('returns false for very old versions', function () {
+            $version = Version::new('5.6.0');
+            $result = $version->isLatestStable();
+
+            expect($result)->toBe(false);
+        });
+
+        it('works with current PHP version', function () {
+            $version = Version::current();
+            $result = $version->isLatestStable();
+
+            expect($result)->toBeBool();
+        });
+    });
+
     describe('edge cases', function () {
         it('handles maximum version numbers', function () {
             $version = Version::new('255.255.255');

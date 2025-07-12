@@ -1,0 +1,59 @@
+name: Update PHP Version
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          
+      - name: Check for version update
+        id: check-version
+        run: php scripts/update-version.php
+        
+      - name: Create Pull Request
+        if: steps.check-version.outputs.version_updated == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update PHP version to ${{ steps.check-version.outputs.new_version }}"
+          title: "🚀 Update PHP version to ${{ steps.check-version.outputs.new_version }}"
+          body: |
+            ## PHP Version Update
+
+            This PR updates the latest stable PHP version constant from `${{ steps.check-version.outputs.old_version }}` to `${{ steps.check-version.outputs.new_version }}`.
+
+            ### Changes
+            - Updated `LATEST_STABLE_VERSION` constant in `src/Version.php`
+            - This ensures `isLatestStable()` method returns accurate results
+
+            ### Auto-generated
+            This PR was automatically created by GitHub Actions when a new PHP version was detected.
+
+            🤖 *Generated on {{ date.now() }}*
+          branch: update-php-version-${{ steps.check-version.outputs.new_version }}
+          delete-branch: true
+          draft: false
+          
+      - name: Output result
+        run: |
+          if [ "${{ steps.check-version.outputs.version_updated }}" = "true" ]; then
+            echo "✅ Version updated and PR created"
+          else
+            echo "ℹ️ No version update needed"
+          fi 
