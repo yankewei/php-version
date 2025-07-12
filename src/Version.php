@@ -71,6 +71,7 @@ class Version
     public function isLatestStable(): bool
     {
         $latestStable = self::new(self::LATEST_STABLE_VERSION);
+
         return $this->compare($latestStable) === 0;
     }
 }
