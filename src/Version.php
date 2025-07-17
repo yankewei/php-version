@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yankewei\PHP;
 
 use InvalidArgumentException;
 
-class Version
+readonly class Version
 {
     /**
      * Latest stable PHP version
      * This constant is updated automatically by GitHub Actions
      */
-    public const LATEST_STABLE_VERSION = '8.4.10';
+    public const string LATEST_STABLE_VERSION = '8.4.10';
 
     private function __construct(
-        public private(set) readonly int $version_id
-    ) {
-    }
+        public readonly int $version_id,
+    ) {}
 
     public static function current(): self
     {
@@ -30,13 +31,13 @@ class Version
     {
         if (is_string($version)) {
             $version = array_map('intval', explode('.', $version));
-            $version_id = $version[0] << 16 | $version[1] << 8 | $version[2];
+            $version_id = ($version[0] << 16) | ($version[1] << 8) | $version[2];
         } else {
             $version_id = hexdec(strval($version));
+        }
 
-            if (! is_int($version_id)) {
-                throw new InvalidArgumentException('Invalid version');
-            }
+        if (!is_int($version_id)) {
+            throw new InvalidArgumentException('Invalid version');
         }
 
         return new self($version_id);
@@ -49,12 +50,12 @@ class Version
 
     public function minor(): int
     {
-        return $this->version_id >> 8 & 0xFF;
+        return ($this->version_id >> 8) & 0xff;
     }
 
     public function patch(): int
     {
-        return $this->version_id & 0xFF;
+        return $this->version_id & 0xff;
     }
 
     /**

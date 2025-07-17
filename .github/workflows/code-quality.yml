@@ -2,48 +2,19 @@ name: Code Quality
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  quality:
+  build:
     runs-on: ubuntu-latest
-    name: Code Quality Checks
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.4
-        extensions: dom, curl, libxml, mbstring, zip
-        tools: composer, cs2pr
-
-    - name: Cache Composer packages
-      uses: actions/cache@v4
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-8.4-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-8.4-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-interaction --no-progress
-
-    - name: Check code style (PHP CS Fixer) - dry run only
-      run: composer run-script cs-check
-
-    - name: Run PHPStan with strict rules
-      run: composer run-script phpstan -- --error-format=github
-
-    - name: Security check (Composer audit)
-      run: composer audit --format=plain
-
-    - name: Check for TODO comments
-      run: |
-        if grep -r "TODO\|FIXME\|XXX" src/ tests/ --exclude-dir=vendor --exclude-dir=.git || true; then
-          echo "::warning::Found TODO/FIXME/XXX comments in codebase"
-        fi 
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Mago
+        uses: nhedger/setup-mago@v1
+      - name: Run Mago
+        run: |
+          mago format --dry-run
+          mago lint --reporting-format=github
