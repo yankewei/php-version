@@ -42,7 +42,7 @@ function getCurrentVersionConstant(): ?string
 
     $content = file_get_contents($versionFile);
     
-    if (preg_match('/public const LATEST_STABLE_VERSION = \'([^\']+)\';/', $content, $matches)) {
+    if (preg_match('/public const string LATEST_STABLE_VERSION = \'([^\']+)\';/', $content, $matches)) {
         return $matches[1];
     }
 
