@@ -75,4 +75,15 @@ readonly class Version
 
         return $this->compare($latestStable) === 0;
     }
+
+    public function isFeatureAvailable(Feature $feature): bool
+    {
+        return match ($feature) {
+            Feature::PROPERTY_HOOKS,
+            Feature::ASYMMETRIC_VISIBILITY,
+            Feature::DEPRECATED_ATTRIBUTE,
+            Feature::WITHOUT_PARENTHESES,
+                => $this->version_id >= 0x080400,
+        };
+    }
 }

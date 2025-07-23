@@ -4,6 +4,7 @@
 [![Tests](https://img.shields.io/github/actions/workflow/status/yankewei/php-version/ci.yml?branch=main&label=tests&style=flat-square)](https://github.com/yankewei/php-version/actions/workflows/ci.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/yankewei/php-version.svg?style=flat-square)](https://packagist.org/packages/yankewei/php-version)
 
+The idea of writing this package is from the [Mago](https://github.com/carthage-software/mago), a PHP tool written in Rust. I'm learning Rust and found this project.
 
 ## Installation
 
@@ -42,6 +43,13 @@ $result = $version1->compare($version2); // -1 (less than)
 
 ```bash
 composer test
+```
+
+## Lint
+This project format and lint is based on the [Mago](https://github.com/carthage-software/mago), you can install the Mago then run following method:
+```bash
+mago format
+mago lint
 ```
 
 ## Changelog

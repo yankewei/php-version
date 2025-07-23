@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Yankewei\PHP\Feature;
 use Yankewei\PHP\Version;
 
 describe('new()', function (): void {
@@ -225,4 +226,45 @@ describe('edge cases', function (): void {
         expect($version1->compare($version2))->toBe(-1);
         expect($version2->compare($version1))->toBe(1);
     });
+});
+
+describe('isFeatureAvailable()', function (): void {
+    it('checks feature availability correctly', function (string|int $versionInput, bool $expected): void {
+        $version = Version::new($versionInput);
+
+        expect($version->isFeatureAvailable(Feature::PROPERTY_HOOKS))->toBe($expected);
+        expect($version->isFeatureAvailable(Feature::ASYMMETRIC_VISIBILITY))->toBe($expected);
+        expect($version->isFeatureAvailable(Feature::DEPRECATED_ATTRIBUTE))->toBe($expected);
+        expect($version->isFeatureAvailable(Feature::WITHOUT_PARENTHESES))->toBe($expected);
+    })->with([
+        // Supported versions (PHP 8.4+)
+        ['8.4.0', true],
+        ['8.4.1', true],
+        ['8.4.10', true],
+        ['8.5.0', true],
+        [80400, true], // Integer format
+        [80401, true], // Integer format
+        // Unsupported versions (PHP < 8.4)
+        ['8.3.0', false],
+        ['8.3.99', false],
+        ['8.2.0', false],
+        ['8.1.0', false],
+        ['8.0.0', false],
+        ['7.4.0', false],
+        [80300, false], // Integer format
+        [80200, false], // Integer format
+    ]);
+
+    it('checks individual features', function (Feature $feature): void {
+        $supportedVersion = Version::new('8.4.0');
+        $unsupportedVersion = Version::new('8.3.0');
+
+        expect($supportedVersion->isFeatureAvailable($feature))->toBe(true);
+        expect($unsupportedVersion->isFeatureAvailable($feature))->toBe(false);
+    })->with([
+        Feature::PROPERTY_HOOKS,
+        Feature::ASYMMETRIC_VISIBILITY,
+        Feature::DEPRECATED_ATTRIBUTE,
+        Feature::WITHOUT_PARENTHESES,
+    ]);
 });
